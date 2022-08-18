@@ -87,20 +87,17 @@ class _MyAppState extends State<MyApp> {
         body: Stack(
           children: [
             Container(
-              // color: Colors.redAccent,
+               color: Colors.redAccent,
               height: MediaQuery.of(context).size.width,
               width: MediaQuery.of(context).size.width,
             ),
             ..._currentTemplate.collageItems.asMap().entries.map(
                   (e) => Positioned(
-                    left: MediaQuery.of(context).size.width * e.value.templateX,
-                    top: MediaQuery.of(context).size.width * e.value.templateY,
+                    left: MediaQuery.of(context).size.width * (e.value.templateX > 1 ? (e.value.templateX / 160) : e.value.templateX),
+                    top: MediaQuery.of(context).size.width * (e.value.templateY > 1 ? (e.value.templateY / 160) : e.value.templateY),
                     child: SizedBox(
-                      width: (MediaQuery.of(context).size.width * e.value.widthFactor + _scale / 2)
-                          .clamp(0, MediaQuery.of(context).size.width * e.value.widthFactor * 1.2),
-                      height: (MediaQuery.of(context).size.width * e.value.heightFactor +
-                              _scale / 2)
-                          .clamp(0, MediaQuery.of(context).size.width * e.value.heightFactor * 1.2),
+                      width: (MediaQuery.of(context).size.width * (e.value.widthFactor > 1 ? (e.value.widthFactor / 160) : e.value.widthFactor)),
+                      height: (MediaQuery.of(context).size.width * (e.value.heightFactor > 1 ? (e.value.heightFactor / 160) : e.value.heightFactor)),
                       child: ClipPath(
                         key: ValueKey(e.key),
                         clipper: SVGClipper(e.value.svgPath),

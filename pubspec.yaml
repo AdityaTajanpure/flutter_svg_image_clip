@@ -65,6 +65,10 @@ flutter:
   assets:
     - assets/svg/
     - assets/samples/
+    - assets/samples/one_frame/
+    - assets/samples/two_frame/
+    - assets/samples/three_frame/
+    - assets/samples/four_frame/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
