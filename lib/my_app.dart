@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
                   },
                   label: 'Scale',
                   min: 1,
-                  max: 100,
+                  max: 53,
                 ),
                 Container(
                   height: 50,
@@ -54,7 +54,6 @@ class _MyAppState extends State<MyApp> {
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    physics: const BouncingScrollPhysics(),
                     children: [
                       for (int i = 0; i < collageItems.length; i++) ...[
                         const SizedBox(
@@ -77,7 +76,7 @@ class _MyAppState extends State<MyApp> {
                             ),
                           ),
                         ),
-                      ]
+                      ],
                     ],
                   ),
                 ),
@@ -90,15 +89,18 @@ class _MyAppState extends State<MyApp> {
             Container(
               // color: Colors.redAccent,
               height: MediaQuery.of(context).size.width,
-              width: double.infinity,
+              width: MediaQuery.of(context).size.width,
             ),
             ..._currentTemplate.collageItems.asMap().entries.map(
                   (e) => Positioned(
                     left: MediaQuery.of(context).size.width * e.value.templateX,
                     top: MediaQuery.of(context).size.width * e.value.templateY,
-                    child: Container(
-                      width: (MediaQuery.of(context).size.width * e.value.widthFactor),
-                      height: (MediaQuery.of(context).size.width * e.value.heightFactor),
+                    child: SizedBox(
+                      width: (MediaQuery.of(context).size.width * e.value.widthFactor + _scale / 2)
+                          .clamp(0, MediaQuery.of(context).size.width * e.value.widthFactor * 1.2),
+                      height: (MediaQuery.of(context).size.width * e.value.heightFactor +
+                              _scale / 2)
+                          .clamp(0, MediaQuery.of(context).size.width * e.value.heightFactor * 1.2),
                       child: ClipPath(
                         key: ValueKey(e.key),
                         clipper: SVGClipper(e.value.svgPath),
