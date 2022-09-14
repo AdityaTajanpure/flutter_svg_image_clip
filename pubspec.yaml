@@ -39,6 +39,14 @@ dependencies:
   zoom_widget: ^0.2.1
   pinch_zoom: ^1.0.0
   path_drawing: ^1.0.1
+  images_picker: ^1.2.11
+  image_picker: ^0.8.3
+  image_gallery_saver: ^1.7.1
+  path_provider: ^2.0.11
+  image_downloader: ^0.31.0
+  permission_handler: ^10.0.0
+  share_plus: ^4.0.10+1
+  fluttertoast: ^8.0.9
 
 dev_dependencies:
   flutter_test:
@@ -65,10 +73,17 @@ flutter:
   assets:
     - assets/svg/
     - assets/samples/
+    - assets/samples/icons/
     - assets/samples/one_frame/
     - assets/samples/two_frame/
     - assets/samples/three_frame/
     - assets/samples/four_frame/
+    - assets/samples/five_frame/
+    - assets/samples/six_frame/
+    - assets/samples/seven_frame/
+    - assets/samples/eight_frame/
+    - assets/samples/nine_frame/
+    - assets/samples/ten_frame/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
