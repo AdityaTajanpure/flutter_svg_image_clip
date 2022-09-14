@@ -35,16 +35,16 @@ dependencies:
   cupertino_icons: ^1.0.2
   path_parsing: ^1.0.1
   svg_path_parser: ^1.1.1
-  flutter_custom_clippers: ^2.0.0
   zoom_widget: ^0.2.1
   pinch_zoom: ^1.0.0
   path_drawing: ^1.0.1
   images_picker: ^1.2.11
   image_picker: ^0.8.3
   image_gallery_saver: ^1.7.1
-  path_provider: ^2.0.11
+  path_provider: ^2.0.4
   image_downloader: ^0.31.0
-  permission_handler: ^10.0.0
+  # permission_handler: ^10.0.0
+  permission_handler: ^9.0.1
   share_plus: ^4.0.10+1
   fluttertoast: ^8.0.9
 

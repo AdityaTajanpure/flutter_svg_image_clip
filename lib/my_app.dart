@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'dart:async';
 import 'dart:ui' as ui;
 import 'dart:convert';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +20,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'clipper/svg_clipper.dart';
 import 'data/collage_items.dart';
 
-
 class MyApp extends StatefulWidget {
-
   final List<XFile?> imageFileList;
 
-  MyApp({Key? key, required this.imageFileList,}) : super(key: key);
+  MyApp({
+    Key? key,
+    required this.imageFileList,
+  }) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -54,170 +54,145 @@ class _MyAppState extends State<MyApp> {
   //late var maxSideLeft;
 
   double maxLeft = 0.0;
-  double tempLeft=0;
+  double tempLeft = 0;
   double maxTop = 0.0;
   double tempTop = 0;
   double secondSlider = 0.0;
   double firstSlider = 0.0;
-
 
   //fit to screen
   var fitScreenValue;
   var instaWidth;
   var instaHeight;
 
-
   void initState() {
-    super.initState();//2
+    super.initState(); //2
 
-    for(int i=0;i<collageItems.length;i++){
-      if(widget.imageFileList.length == collageItems[i].collageItems.length)
-      {
+    for (int i = 0; i < collageItems.length; i++) {
+      if (widget.imageFileList.length == collageItems[i].collageItems.length) {
         mylist.add(collageItems[i]);
         currentTemplate = mylist.first;
       }
-
     }
   }
 
-  void onItemTapped(int index){
-    setState((){
+  void onItemTapped(int index) {
+    setState(() {
       selectedIndex = index;
-      if(selectedIndex == 0)
+      if (selectedIndex == 0)
         isVisible = true;
       else
         isVisible = false;
       //print(selectedindex);
 
-      if(selectedIndex == 2)
-        showRatiodialog(context);
-
+      if (selectedIndex == 2) showRatiodialog(context);
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          elevation: 1,
-          backgroundColor: Color(0xffFFC500),
-          automaticallyImplyLeading: true,
-          leading: InkWell(
-            onTap: (){
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            elevation: 1,
+            backgroundColor: Color(0xffFFC500),
+            automaticallyImplyLeading: true,
+            leading: InkWell(
+              onTap: () {
                 Navigator.pop(context);
-            },
-            child: Icon(
-              Icons.navigate_before,
-              color: Colors.black,
-              size: 30,
+              },
+              child: Icon(
+                Icons.navigate_before,
+                color: Colors.black,
+                size: 30,
+              ),
             ),
-          ),
-          title: const Text(
+            title: const Text(
               'Photo Collage',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
+            actions: [
+              IconButton(
+                  //share button
+                  onPressed: () async {
+                    // print(capturedFile.path);print("\n");
+                    // print(capturedFile);print("\n");
+                    // print(imgPath);
+                    PermissionStatus storage = await Permission.storage.request();
 
-          actions: [
-            IconButton(
-              //share button
-                onPressed: () async {
-                  // print(capturedFile.path);print("\n");
-                  // print(capturedFile);print("\n");
-                  // print(imgPath);
-                  PermissionStatus storage = await Permission.storage.request();
-
-                  //print(storage);
-                  if(storage == PermissionStatus.granted)
-                  {
-                    print("success");
-                    capturePng("Share");
-                  }
-                  else if(storage == PermissionStatus.denied) {
-                    print("deni");
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Store Image")));
-                  }
-                  else if(storage == PermissionStatus.permanentlyDenied)
-                  {
-                    //print("dd");
-                    openAppSettings();
-                  }
-
-
-                },
-                icon: Icon(
+                    //print(storage);
+                    if (storage == PermissionStatus.granted) {
+                      print("success");
+                      capturePng("Share");
+                    } else if (storage == PermissionStatus.denied) {
+                      print("deni");
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text("Store Image")));
+                    } else if (storage == PermissionStatus.permanentlyDenied) {
+                      //print("dd");
+                      openAppSettings();
+                    }
+                  },
+                  icon: Icon(
                     Icons.share_outlined,
                     color: Colors.black,
-                )),
-
-            IconButton(
-                //download button
-                onPressed: () async {
+                  )),
+              IconButton(
+                  //download button
+                  onPressed: () async {
                     //downloadCollageImage();
                     //capturePng();
 
                     PermissionStatus storage = await Permission.storage.request();
 
                     //print(storage);
-                    if(storage == PermissionStatus.granted)
-                    {
+                    if (storage == PermissionStatus.granted) {
                       print("success");
                       capturePng("Download");
-                    }
-                    else if(storage == PermissionStatus.denied) {
+                    } else if (storage == PermissionStatus.denied) {
                       print("deni");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Store Image")));
-                    }
-                    else if(storage == PermissionStatus.permanentlyDenied)
-                    {
-                     // print("dd");
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text("Store Image")));
+                    } else if (storage == PermissionStatus.permanentlyDenied) {
+                      // print("dd");
                       openAppSettings();
                     }
-                },
-                icon: Icon(
+                  },
+                  icon: Icon(
                     Icons.file_download_outlined,
                     color: Colors.black,
-                )),
-          ],
-
-
-        ),
-
-        bottomNavigationBar: Stack(
-          children: [
-            Container(
-              height: 60,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
+                  )),
+            ],
+          ),
+          bottomNavigationBar: Stack(
+            children: [
+              Container(
+                height: 60,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
                   colors: [
                     Color(0xffFFC500),
                     Color(0xffFFEC00),
                   ],
-                  stops: [0.7,1.0],
+                  stops: [0.7, 1.0],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                )
+                )),
               ),
-            ),
-            BottomNavigationBar(
+              BottomNavigationBar(
                 elevation: 0,
                 backgroundColor: Colors.transparent,
                 unselectedItemColor: Colors.black,
                 selectedItemColor: Colors.black,
-                selectedLabelStyle: TextStyle(height:2,fontSize: 10, fontWeight: FontWeight.w700),
-                unselectedLabelStyle: TextStyle(height: 2,fontSize: 10,fontWeight: FontWeight.w500),
-
+                selectedLabelStyle: TextStyle(height: 2, fontSize: 10, fontWeight: FontWeight.w700),
+                unselectedLabelStyle:
+                    TextStyle(height: 2, fontSize: 10, fontWeight: FontWeight.w500),
                 items: <BottomNavigationBarItem>[
-
                   BottomNavigationBarItem(
                     icon: ImageIcon(
                       AssetImage("assets/samples/icons/layout.png"),
@@ -231,7 +206,6 @@ class _MyAppState extends State<MyApp> {
                     ),
                     label: "Layout",
                   ),
-
                   BottomNavigationBarItem(
                     icon: ImageIcon(
                       AssetImage("assets/samples/icons/adjust.png"),
@@ -245,7 +219,6 @@ class _MyAppState extends State<MyApp> {
                     ),
                     label: "Adjust",
                   ),
-
                   BottomNavigationBarItem(
                     icon: ImageIcon(
                       AssetImage("assets/samples/icons/ratio.png"),
@@ -254,80 +227,74 @@ class _MyAppState extends State<MyApp> {
                     ),
                     label: "Ratio",
                   ),
-
-
                 ],
                 type: BottomNavigationBarType.fixed,
                 currentIndex: selectedIndex,
                 onTap: onItemTapped,
               ),
-          ],
-        ),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 1),
+            child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+              double tempCavasHeight = res == "Instagram" ? 16 * 100.w / 9 : 100.w;
 
-        body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 1),
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints){
-
-              double tempCavasHeight = res == "Instagram"? 16*100.w/ 9 : 100.w;
-
-              double widthCanvas = tempCavasHeight > constraints.maxHeight   ?
-                  9 * constraints.maxHeight / 16 : 100.w;
-              double heightCanvas = res == "Instagram" ?
-              tempCavasHeight > constraints.maxHeight ?
-                  constraints.maxHeight : 16 * 100.w /9  : 100.w;
+              double widthCanvas =
+                  tempCavasHeight > constraints.maxHeight ? 9 * constraints.maxHeight / 16 : 100.w;
+              double heightCanvas = res == "Instagram"
+                  ? tempCavasHeight > constraints.maxHeight
+                      ? constraints.maxHeight
+                      : 16 * 100.w / 9
+                  : 100.w;
 
               //for left
               currentTemplate.collageItems.sort(
-                      (a,b) =>  (a.templateX).compareTo(b.templateX),
+                (a, b) => (a.templateX).compareTo(b.templateX),
               );
               maxLeft = currentTemplate.collageItems.first.templateX;
-              maxLeft = maxLeft *2;
+              maxLeft = maxLeft * 2;
               print("Left first element");
               print(currentTemplate.collageItems.first.templateX);
               print(tempLeft);
-              tempLeft =  widthCanvas * maxLeft / 160;
+              tempLeft = widthCanvas * maxLeft / 160;
 
               //for top
               currentTemplate.collageItems.sort(
-                    (a,b) =>  (a.templateY).compareTo(b.templateY),
+                (a, b) => (a.templateY).compareTo(b.templateY),
               );
               maxTop = currentTemplate.collageItems.first.templateY;
-              maxTop = maxTop*2;
+              maxTop = maxTop * 2;
               print("top first element");
               print(currentTemplate.collageItems.first.templateY);
               print(tempTop);
-              tempTop =  heightCanvas * maxTop / 160;
+              tempTop = heightCanvas * maxTop / 160;
 
               //formula FOR Square
-              fitScreenValue = (widthCanvas * 1.8)/ 392.72;
+              fitScreenValue = (widthCanvas * 1.8) / 392.72;
 
               //formulla for Instagram
               instaWidth = (widthCanvas * 1.9) / 356.625;
               instaHeight = (heightCanvas * 1.9) / 640;
 
-
               //all values
               print(
-                  "\nBox Height: ${constraints.maxHeight}, "
-                      "\ncanvas width : $widthCanvas,"
-                      "\ncanvas height: $heightCanvas,"
-                      "\ntempCanvas Height: $tempCavasHeight",
-                      //"\nTemp: $temp",
-                 );
-              print("Left = dx: ${(widthCanvas * (5 / 160)) - (firstSlider)}, width Canvas $widthCanvas");
-              print("Top = dy: ${(widthCanvas * (5.5 / 160)) - (firstSlider)}, height Canvas $heightCanvas");
-
-
-
-
+                "\nBox Height: ${constraints.maxHeight}, "
+                "\ncanvas width : $widthCanvas,"
+                "\ncanvas height: $heightCanvas,"
+                "\ntempCanvas Height: $tempCavasHeight",
+                //"\nTemp: $temp",
+              );
+              print(
+                  "Left = dx: ${(widthCanvas * (5 / 160)) - (firstSlider)}, width Canvas $widthCanvas");
+              print(
+                  "Top = dy: ${(widthCanvas * (5.5 / 160)) - (firstSlider)}, height Canvas $heightCanvas");
 
               return Stack(
                 children: [
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       //print("hide collage controls");
-                      setState((){
+                      setState(() {
                         isVisible = false;
                       });
                     },
@@ -339,48 +306,55 @@ class _MyAppState extends State<MyApp> {
                           //color: Color(0xffEDDB00),
                           color: Colors.white,
                           height: heightCanvas,
-                          width:  widthCanvas,
+                          width: widthCanvas,
                           //padding: EdgeInsets.all(5),
                           child: Stack(
-                            children: currentTemplate.collageItems.asMap().entries.map(
+                            children: currentTemplate.collageItems
+                                .asMap()
+                                .entries
+                                .map(
                                   (e) => Positioned(
-                                key: ObjectKey(e.value),
+                                    key: ObjectKey(e.value),
 //outer
-                                left: (widthCanvas * (e.value.templateX / 160)) - (firstSlider),
-                                top: (heightCanvas) * (e.value.templateY / 160) - (firstSlider),
+                                    left: (widthCanvas * (e.value.templateX / 160)) - (firstSlider),
+                                    top: (heightCanvas) * (e.value.templateY / 160) - (firstSlider),
 
 //inner
 
-                            child: SizedBox(
-                              width: res == "Instagram" ?
-                                widthCanvas * (e.value.widthFactor / 160) + firstSlider * instaWidth :
-                                widthCanvas * (e.value.widthFactor / 160) + firstSlider * fitScreenValue,
-                              height: res == "Instagram" ?
-                                heightCanvas * (e.value.heightFactor / 160) + firstSlider * instaHeight :
-                                heightCanvas * (e.value.heightFactor / 160) + firstSlider * fitScreenValue,
-
-                                  child: ClipPath(
-                                    clipper: SVGClipper(e.value.svgPath),
-                                    child: ClipRRect(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      borderRadius: BorderRadius.all(Radius.circular(secondSlider)),
-                                      child: InteractiveViewer(
-                                        child: Image.file(
-                                          File(widget.imageFileList[e.key]!.path),
-                                          fit: BoxFit.cover,
+                                    child: SizedBox(
+                                      width: res == "Instagram"
+                                          ? widthCanvas * (e.value.widthFactor / 160) +
+                                              firstSlider * instaWidth
+                                          : widthCanvas * (e.value.widthFactor / 160) +
+                                              firstSlider * fitScreenValue,
+                                      height: res == "Instagram"
+                                          ? heightCanvas * (e.value.heightFactor / 160) +
+                                              firstSlider * instaHeight
+                                          : heightCanvas * (e.value.heightFactor / 160) +
+                                              firstSlider * fitScreenValue,
+                                      child: ClipPath(
+                                        clipper: SVGClipper(e.value.svgPath),
+                                        child: ClipRRect(
+                                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                                          borderRadius:
+                                              BorderRadius.all(Radius.circular(secondSlider)),
+                                          child: InteractiveViewer(
+                                            child: Image.file(
+                                              File(widget.imageFileList[e.key]!.path),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ).toList(),
+                                )
+                                .toList(),
                           ),
                         ),
                       ),
                     ),
                   ),
-
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Material(
@@ -389,104 +363,99 @@ class _MyAppState extends State<MyApp> {
                         height: 15.h,
                         //color: Colors.red,
                         //margin: EdgeInsets.only(top: 5),
-                        child:
-                        selectedIndex == 0 ?
-                            _getLayoutView() :
-                        selectedIndex == 1 ?
-                            _adjustCollage() :
-                      //selected tab == 3
-                            _changeRatio(),
+                        child: selectedIndex == 0
+                            ? _getLayoutView()
+                            : selectedIndex == 1
+                                ? _adjustCollage()
+                                :
+                                //selected tab == 3
+                                _changeRatio(),
                       ),
                     ),
                   )
                 ],
               );
-            }
-          ),
-        )
-      ),
+            }),
+          )),
     );
   }
 
   //tab 1
-  Widget _getLayoutView() =>
-      Visibility(
+  Widget _getLayoutView() => Visibility(
         visible: isVisible ? true : false,
         child: Container(
-        //height: 40,
-        //color: Color(0xffFAFF00),
-        width: MediaQuery.of(context).size.width,
-        alignment: Alignment.center,
+          //height: 40,
+          //color: Color(0xffFAFF00),
+          width: MediaQuery.of(context).size.width,
+          alignment: Alignment.center,
           child: ListView(
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          children: [
-            //for (int i = 0; i < collageItems.length; i++) ...[
-            for (int i = 0; i < mylist.length; i++) ...[
-              SizedBox(
-                width: 15,
-                height: 15,
-              ),
-              InkWell(
-                splashColor: Colors.redAccent,
-                onTap: () {
-                  //currentTemplate = currentTemplate!.collageItems![i] as CollageTemplate;
-                  currentTemplate = mylist[i];
-                  setState(() {
-                    firstSlider =0;
-                  });
-                },
-                child: Stack(
-                  children: [
-                    Container(
-                      width: 60,
-                      height: 50,
-                      padding: EdgeInsets.all(1.5),
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1,color: Color(0xffFAFF00)),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        color: Color(0xffFAFF00),
-                      ),
-                      child: Image.asset(
-                        mylist[i].sampleImage,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Visibility(
-                      visible: currentTemplate == mylist[i],
-                      child: Container(
-                        alignment: Alignment.center,
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            children: [
+              //for (int i = 0; i < collageItems.length; i++) ...[
+              for (int i = 0; i < mylist.length; i++) ...[
+                SizedBox(
+                  width: 15,
+                  height: 15,
+                ),
+                InkWell(
+                  splashColor: Colors.redAccent,
+                  onTap: () {
+                    //currentTemplate = currentTemplate!.collageItems![i] as CollageTemplate;
+                    currentTemplate = mylist[i];
+                    setState(() {
+                      firstSlider = 0;
+                    });
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
                         width: 60,
                         height: 50,
+                        padding: EdgeInsets.all(1.5),
+                        clipBehavior: Clip.antiAlias,
                         decoration: BoxDecoration(
-                          color: Color(0xFF0E3311).withOpacity(0.5),
+                          border: Border.all(width: 1, color: Color(0xffFAFF00)),
                           borderRadius: BorderRadius.all(Radius.circular(5)),
-                          border: Border.all(width: 1,color: Color(0xffEDDE00)),
+                          color: Color(0xffFAFF00),
                         ),
                         child: Image.asset(
-                          "assets/samples/icons/done.png",
-                          fit: BoxFit.cover,
-                          //color: Color(0xff),
-                          height: 15,
-                          width: 20,
+                          mylist[i].sampleImage,
+                          fit: BoxFit.fill,
                         ),
                       ),
-                    ),
-                  ],
+                      Visibility(
+                        visible: currentTemplate == mylist[i],
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: 60,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Color(0xFF0E3311).withOpacity(0.5),
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            border: Border.all(width: 1, color: Color(0xffEDDE00)),
+                          ),
+                          child: Image.asset(
+                            "assets/samples/icons/done.png",
+                            fit: BoxFit.cover,
+                            //color: Color(0xff),
+                            height: 15,
+                            width: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-
+              ],
             ],
-          ],
+          ),
         ),
-      ),
-    );
+      );
 
   //tab 2
-  Widget _adjustCollage() =>
-      Container(
+  Widget _adjustCollage() => Container(
       height: 15.h,
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.only(top: 5.h),
@@ -499,18 +468,16 @@ class _MyAppState extends State<MyApp> {
             //color: Colors.red,
             child: SliderTheme(
               data: SliderThemeData(
-                  trackHeight: 0.5,
-                  thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5)
-              ),
+                  trackHeight: 0.5, thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5)),
               child: Slider(
                 activeColor: Color(0xffFAFF00),
                 inactiveColor: Color(0xff7D7D7D),
                 thumbColor: Color(0xffFAFF00),
-                min: -(tempLeft/2),
-                max: tempLeft/2,
+                min: -(tempLeft / 2),
+                max: tempLeft / 2,
                 value: firstSlider,
-                onChanged: (value){
-                  setState((){
+                onChanged: (value) {
+                  setState(() {
                     firstSlider = value;
                     print("First Slider-> ${tempLeft} ->  ${firstSlider}");
                     //print("First Slider => ${tempTop} =>  ${firstSlider}");
@@ -524,9 +491,7 @@ class _MyAppState extends State<MyApp> {
             height: 3.h,
             child: SliderTheme(
               data: SliderThemeData(
-                  trackHeight: 0.5,
-                  thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5)
-              ),
+                  trackHeight: 0.5, thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5)),
               child: Slider(
                 activeColor: Color(0xffFAFF00),
                 inactiveColor: Color(0xff7D7D7D),
@@ -534,61 +499,54 @@ class _MyAppState extends State<MyApp> {
                 min: 0.0,
                 max: 20.0,
                 value: secondSlider,
-                onChanged: (value){
-                  setState((){
+                onChanged: (value) {
+                  setState(() {
                     secondSlider = value;
                     print("Second Slider -> ${tempLeft} -> ${secondSlider}");
                     print("Second Slider -> ${tempTop} => ${secondSlider}");
-
                   });
                 },
               ),
             ),
           ),
-
         ],
       ));
 
   //tab 3
-  Widget _changeRatio() =>
-      SizedBox(
+  Widget _changeRatio() => SizedBox(
         height: 0,
         width: 0,
       );
 
-
-  Future<void>showRatiodialog(BuildContext context) async
-  {
-
+  Future<void> showRatiodialog(BuildContext context) async {
     var tempResult;
     tempResult = await showDialog(
-       context: context,
-       builder: (context){
-         return Dialog(
-           shape: RoundedRectangleBorder(),
-           child: Column(
-             mainAxisSize: MainAxisSize.min,
-             children: [
-               SelectRatio(res: res),
-             ],
-           ),
-         );
-       });
-       setState((){
-           if(tempResult!=null){
-             res = tempResult;
-              firstSlider = 0;
-              secondSlider = 0;
-           }
-       });
-      //print("result: => ${res}");
+        context: context,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SelectRatio(res: res),
+              ],
+            ),
+          );
+        });
+    setState(() {
+      if (tempResult != null) {
+        res = tempResult;
+        firstSlider = 0;
+        secondSlider = 0;
+      }
+    });
+    //print("result: => ${res}");
   }
 
   //screenshot
-  Future<Uint8List> capturePng(String type) async
-  {
-
-    RenderRepaintBoundary? boundary = globalKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+  Future<Uint8List> capturePng(String type) async {
+    RenderRepaintBoundary? boundary =
+        globalKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
     ui.Image image = await boundary!.toImage(pixelRatio: 3.0);
 
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -603,25 +561,25 @@ class _MyAppState extends State<MyApp> {
     print("Capture File: ${capturedFile.path}");
     // print(capturedFile.path);
 
-      imgResult = await ImageGallerySaver.saveImage(
-        pngBytes,quality: 60,
-        name: "photo_collage${DateTime.now()}",
-      );
+    imgResult = await ImageGallerySaver.saveImage(
+      pngBytes,
+      quality: 60,
+      name: "photo_collage${DateTime.now()}",
+    );
 
-      if(type == "Share"){
-        await Share.shareFiles(
-          [capturedFile.path.toString()],
-          text: "text",
-          subject: "subject",
-        );
-      }
-      print("ImgResult: ${imgResult}");
-      print("png done");
-      Fluttertoast.showToast(
-          msg: "Image Downloaded !!!",
-          toastLength: Toast.LENGTH_LONG,
+    if (type == "Share") {
+      await Share.shareFiles(
+        [capturedFile.path.toString()],
+        text: "text",
+        subject: "subject",
       );
-      return pngBytes;
+    }
+    print("ImgResult: ${imgResult}");
+    print("png done");
+    Fluttertoast.showToast(
+      msg: "Image Downloaded !!!",
+      toastLength: Toast.LENGTH_LONG,
+    );
+    return pngBytes;
   }
-
 }
